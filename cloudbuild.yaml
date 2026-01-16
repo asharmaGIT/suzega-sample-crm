@@ -1,0 +1,46 @@
+steps:
+  # Deploy CRM database schema and generate sample data
+  - name: 'python:3.11-slim'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        set -e
+
+        echo "=== Installing dependencies ==="
+        apt-get update && apt-get install -y --no-install-recommends postgresql-client curl ca-certificates
+        pip install --no-cache-dir faker psycopg2-binary python-dotenv
+
+        echo "=== Downloading Cloud SQL Proxy ==="
+        curl -fsSL -o /cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.8.0/cloud-sql-proxy.linux.amd64
+        chmod +x /cloud-sql-proxy
+
+        echo "=== Starting Cloud SQL Proxy ==="
+        /cloud-sql-proxy --private-ip ${_INSTANCE_CONNECTION_NAME} --port 5432 &
+        PROXY_PID=$$!
+        sleep 10
+
+        echo "=== Running schema.sql ==="
+        PGPASSWORD="${_DB_PASSWORD}" psql -h 127.0.0.1 -p 5432 -U ${_DB_USER} -d ${_DB_NAME} -f schema.sql
+
+        echo "=== Generating sample data ==="
+        export DB_HOST=127.0.0.1
+        export DB_PORT=5432
+        export DB_NAME=${_DB_NAME}
+        export DB_USER=${_DB_USER}
+        export DB_PASSWORD="${_DB_PASSWORD}"
+        python3 generate_data.py
+
+        echo "=== Deployment complete ==="
+        kill $$PROXY_PID 2>/dev/null || true
+
+substitutions:
+  _INSTANCE_CONNECTION_NAME: 'rnd-dev-asheesh:us-central1:ithara-db'
+  _DB_NAME: 'crm_db'
+  _DB_USER: 'postgres'
+  _DB_PASSWORD: 'CrmDemo2024!'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: '600s'

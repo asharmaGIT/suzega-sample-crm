@@ -1,0 +1,43 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# GCP commands reference (local only)
+GCP_COMMANDS.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Cloud SQL Proxy
+cloud-sql-proxy
+cloud_sql_proxy
+
+# Service account keys
+*.json
+!package.json
+deployer-key.json
+
+# Claude Code
+.claude/

@@ -1,0 +1,5 @@
+faker>=18.0.0
+python-dotenv>=1.0.0
+cloud-sql-python-connector[pg8000]>=1.0.0
+pg8000>=1.30.0
+sqlalchemy>=2.0.0
