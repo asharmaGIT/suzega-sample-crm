@@ -44,10 +44,12 @@ from sqlalchemy import text
 # Load environment variables
 load_dotenv()
 
-# Initialize Faker
+# Initialize Faker with time-based seed for unique data each run
+import time
+seed = int(time.time())
 fake = Faker()
-Faker.seed(42)  # For reproducibility
-random.seed(42)
+Faker.seed(seed)
+random.seed(seed)
 
 # Configuration - default record counts
 DEFAULT_COUNTS = {
