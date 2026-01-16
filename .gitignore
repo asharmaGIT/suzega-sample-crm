@@ -6,6 +6,9 @@
 # GCP commands reference (local only)
 GCP_COMMANDS.md
 
+# Git commands reference (local only)
+GIT_COMMANDS.md
+
 # Python
 __pycache__/
 *.py[cod]
